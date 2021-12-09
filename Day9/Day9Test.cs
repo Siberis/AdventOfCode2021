@@ -41,7 +41,7 @@ namespace Day9
             var lines = await ReadUtils.ReadAllLines("./Day9Part1Input.txt").ConfigureAwait(false);
             var parts = lines.Select(e => e).ToArray();
 
-            Assert.Equal(0, Day9.Star2(parts));
+            Assert.Equal(1075536, Day9.Star2(parts));
         }
     }
 }

@@ -13,35 +13,7 @@ namespace Day15
         {
             var graph = new Dictionary<(int, int), Dictionary<(int, int), int>>();
             PrepareGraph(input, graph);
-            var dist = new int[graph.Count];
-            var queue = new List<(int, int, int)>();
-            for (int i = 0; i < graph.Count; i++)
-            {
-                var x = i / input.Length;
-                var y = i % input.Length;
-                queue.Add((x, y, i));
-                dist[i] = int.MaxValue;
-            }
-            dist[0] = 0;
-            while (queue.Count > 0)
-            {
-                var minx = queue.MinBy(e => dist[e.Item3]);
-                var index = queue.IndexOf(minx);
-                var min = dist[minx.Item3];
-                queue.RemoveAt(index);
-                var x = minx.Item3 / input.Length;
-                var y = minx.Item3 % input.Length;
-                foreach (var neig in graph[(x, y)])
-                {
-                    var dist2 = min + neig.Value;
-                    int idx = (neig.Key.Item1 * input.Length) + neig.Key.Item2;
-                    if (dist2 < dist[idx])
-                    {
-                        dist[idx] = dist2;
-                    }
-                }
-            }
-            return dist[graph.Count - 1];
+            return Dijkstra(input.Length, graph);
         }
 
         public static int Star2(string[] input)
@@ -67,12 +39,17 @@ namespace Day15
                 }
             }
             PrepareGraph(newInput, graph, input.Length * 5);
+            return Dijkstra(input.Length * 5, graph);
+        }
+
+        private static int Dijkstra(int inputLength, Dictionary<(int, int), Dictionary<(int, int), int>> graph)
+        {
             var dist = new int[graph.Count];
             var queue = new List<(int, int, int)>();
             for (int i = 0; i < graph.Count; i++)
             {
-                var x = i / (input.Length * 5);
-                var y = i % (input.Length * 5);
+                var x = i / inputLength;
+                var y = i % inputLength;
                 dist[i] = int.MaxValue;
             }
             queue.Add((0, 0, 0));
@@ -83,12 +60,12 @@ namespace Day15
                 var index = queue.IndexOf(minx);
                 var min = dist[minx.Item3];
                 queue.RemoveAt(index);
-                var x = minx.Item3 / (input.Length * 5);
-                var y = minx.Item3 % (input.Length * 5);
+                var x = minx.Item3 / inputLength;
+                var y = minx.Item3 % inputLength;
                 foreach (var neig in graph[(x, y)])
                 {
                     var dist2 = min + neig.Value;
-                    int idx = (neig.Key.Item1 * input.Length * 5) + neig.Key.Item2;
+                    int idx = (neig.Key.Item1 * inputLength) + neig.Key.Item2;
                     if (dist2 < dist[idx])
                     {
                         dist[idx] = dist2;
@@ -102,6 +79,7 @@ namespace Day15
             }
             return dist[graph.Count - 1];
         }
+
         private static void PrepareGraph(string[] input, Dictionary<(int, int), Dictionary<(int, int), int>> graph)
         {
             for (int x = 0; x < input.Length; x++)
